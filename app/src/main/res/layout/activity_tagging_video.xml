@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/layout_root"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:orientation="vertical"
+    >
+
+    <android.support.v7.widget.SearchView
+        android:id="@+id/searchView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+    </android.support.v7.widget.SearchView>
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/tagRecyclerView"
+        android:layout_width="match_parent"
+
+        android:layout_height="125dp"
+        android:layout_gravity="center_vertical|center_horizontal|center">
+
+    </android.support.v7.widget.RecyclerView>
+
+    <VideoView
+        android:id="@+id/ForTheBoys2"
+        android:layout_width="match_parent"
+        android:layout_height="250dp"
+
+        />
+
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/floatingActionButton"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="right"
+        android:backgroundTint="@color/purple_main"
+        android:clickable="true"
+        app:srcCompat="@android:drawable/checkbox_on_background" />
+
+    <Button
+        android:id="@+id/descriptionButton"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Add Description" />
+
+
+</LinearLayout>

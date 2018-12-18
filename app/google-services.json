@@ -1,0 +1,42 @@
+{
+  "project_info": {
+    "project_number": "66209939571",
+    "firebase_url": "https://development-yearbook.firebaseio.com",
+    "project_id": "development-yearbook",
+    "storage_bucket": "development-yearbook.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:66209939571:android:6522644356261797",
+        "android_client_info": {
+          "package_name": "com.mdb.yearbook.android"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "66209939571-i9kodpt8lfoq103b5jsb507qdv6hij9k.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyD2m9NuR_87Ad6X1PXLZLeRWGFNPJaJqA8"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
