@@ -1,17 +1,64 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:orientation="horizontal" android:layout_width="match_parent"
-    android:layout_height="250dp"
-    android:layout_weight="1">
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="150dp">
 
-    <ImageView
-        android:layout_width="0dp"
-        android:layout_height="match_parent"
-        android:layout_weight="1"
-        android:id="@+id/image1"
-        app:srcCompat="@drawable/camera"
-        android:scaleType="centerCrop"
+    <VideoView
+        android:id="@+id/video1"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:layout_gravity="center"
         android:layout_margin="2dp"/>
 
-</LinearLayout>
+    <ImageView
+        android:id="@+id/image1"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:scaleType="center"
+        android:src="@drawable/camera" />
+
+
+</FrameLayout>
+
+    <!--<?xml version="1.0" encoding="utf-8"?>
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        android:orientation="horizontal" android:layout_width="match_parent"
+        android:layout_height="150dp"
+        android:layout_weight="2">
+        <VideoView
+            android:id="@+id/video1"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:scaleType="centerCrop"
+            android:layout_margin="2dp"/>
+    </LinearLayout>
+    -->
+
+    <!--
+    <?xml version="1.0" encoding="utf-8"?>
+    <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="match_parent"
+        android:layout_height="300dp"
+        android:paddingLeft="16dp"
+        android:paddingRight="16dp" >
+        <VideoView
+            android:layout_width="0dp"
+            android:layout_height="300dp"
+            android:id="@+id/video1"
+            android:src="@drawable/camera"
+            android:scaleType="centerCrop"
+            android:layout_margin="2dp"/>
+        <ImageView
+            android:id="@+id/image1"
+            android:layout_width="match_parent"
+            android:layout_height="300dp"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
+            android:layout_alignTop="@+id/video1"
+            android:layout_marginTop="105dp"
+            android:scaleType="centerCrop"
+            android:src="@drawable/camera" />
+    </RelativeLayout>
+    -->

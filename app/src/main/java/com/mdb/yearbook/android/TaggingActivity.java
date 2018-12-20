@@ -2,6 +2,7 @@ package com.mdb.yearbook.android;
 
 import android.content.Context;
 import android.content.Intent;
+import android.media.MediaPlayer;
 import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
@@ -43,6 +44,10 @@ public class TaggingActivity extends AppCompatActivity {
     private static final int REQUEST_TAKE_PHOTO_PERMISSIONS = 4;
     private static int IMAGE_CAPTURE_REQUEST = 1;
 
+    public static Uri testbro;
+
+    public static boolean isVideo;
+
     public static Uri imageUri, newPhotoUri; //newPhotoUri is the current photo that the user took
 
     @Override
@@ -51,6 +56,8 @@ public class TaggingActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         if (getIntent().hasExtra("newVideoUri")) {
             setContentView(R.layout.activity_tagging_video);
+            isVideo = true;
+
         } else {
             setContentView(R.layout.activity_tagging);
         }
@@ -84,7 +91,15 @@ public class TaggingActivity extends AppCompatActivity {
 
         if (getIntent().hasExtra("newVideoUri")) {
             newPhotoUri = Uri.parse(getIntent().getStringExtra("newVideoUri"));
+            testbro = newPhotoUri;
             ((VideoView) findViewById(R.id.ForTheBoys2)).setVideoURI(newPhotoUri);
+            ((VideoView) findViewById(R.id.ForTheBoys2)).start();
+            ((VideoView) findViewById(R.id.ForTheBoys2)).setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
+                @Override
+                public void onPrepared(MediaPlayer mp) {
+                    mp.setLooping(true);
+                }
+            });
         } else {
             newPhotoUri = Uri.parse(getIntent().getStringExtra("newPhotoUri"));
             ((ImageView) findViewById(R.id.ForTheBoys)).setImageURI(newPhotoUri);
@@ -113,6 +128,7 @@ public class TaggingActivity extends AppCompatActivity {
 
 
     public void addToFirebase() {
+
         final DatabaseReference ref = FirebaseDatabase.getInstance().getReference();
         final String key = ref.child("Photos").push().getKey();
 
@@ -123,69 +139,81 @@ public class TaggingActivity extends AppCompatActivity {
 
         final ArrayList<String> taggedMembers = new ArrayList<>();
 
+        try {
+            String x = YearbookActivity.mAuth.getCurrentUser().getUid();
+            DatabaseReference d = YearbookActivity.mDatabase;
+
 //        FirebaseUtils.groupIdRef.addListenerForSingleValueEvent(new ValueEventListener() {
-        YearbookActivity.mDatabase.child("Users").child(YearbookActivity.mAuth.getCurrentUser().getUid()).child("groupIds").addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                try {
-                    YearbookActivity.currentGroup = ((ArrayList<String>) dataSnapshot.getValue()).get(0); //get current group
+            YearbookActivity.mDatabase.child("Users").child(YearbookActivity.mAuth.getCurrentUser().getUid()).child("groupIds").addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot dataSnapshot) {
+                    try {
+                        YearbookActivity.currentGroup = ((ArrayList<String>) dataSnapshot.getValue()).get(0); //get current group
 
-                    ArrayList<String> groupIds = new ArrayList<>();
-                    groupIds.add(YearbookActivity.currentGroup);
+                        ArrayList<String> groupIds = new ArrayList<>();
+                        groupIds.add(YearbookActivity.currentGroup);
 
-                    Long timeUnix = System.currentTimeMillis();
-                    StorageReference storageRef = FirebaseStorage.getInstance().getReferenceFromUrl(getString(R.string.firebase_link));
-                    final StorageReference newPhotoRef = storageRef.child("photos/" + key + ".jpg");
-                    final Photo newPhoto = new Photo("", key, YearbookActivity.mAuth.getCurrentUser().getUid(),
-                            groupIds, timeUnix, "", adapter.isTagged);
-
-                    ref.child("Groups").child(YearbookActivity.currentGroup).addListenerForSingleValueEvent(new ValueEventListener() {
-                        @Override
-                        public void onDataChange(DataSnapshot dataSnapshot) {
-                            Group g = dataSnapshot.getValue(Group.class);
-                            if (g != null)  {
-                                if (g.getPhotoIds() == null) {
-                                    g.setPhotoIds(new ArrayList<String>());
-                                }
-                                g.getPhotoIds().add(key);
-                            }
-
-
-                            newPhotoRef.putFile(newPhotoUri).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
-                                @Override
-                                public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-                                    newPhoto.setImageUrl(taskSnapshot.getDownloadUrl().toString());
-                                    ref.child("Photos").child(key).setValue(newPhoto);
-                                    //progressBar.setVisibility(ProgressBar.INVISIBLE);
-                                }
-                            }).addOnFailureListener(new OnFailureListener() {
-                                @Override
-                                public void onFailure(@NonNull Exception e) {
-                                    Toast.makeText(getApplicationContext(), "Image failed to upload", Toast.LENGTH_SHORT);
-                                    //progressBar.setVisibility(ProgressBar.INVISIBLE);
-                                }
-                            });
-
-                            ref.child("Groups").child(YearbookActivity.currentGroup).setValue(g);
+                        Long timeUnix = System.currentTimeMillis();
+                        StorageReference storageRef = FirebaseStorage.getInstance().getReferenceFromUrl(getString(R.string.firebase_link));
+                        final StorageReference newPhotoRef;
+                        if (newPhotoUri.getPath().contains("video")) {
+                            newPhotoRef = storageRef.child("photos/" + key + ".mp4");
+                        } else {
+                            newPhotoRef = storageRef.child("photos/" + key + ".jpg");
                         }
 
-                        @Override
-                        public void onCancelled(DatabaseError databaseError) { }
-                    });
+                        final Photo newPhoto = new Photo("", key, YearbookActivity.mAuth.getCurrentUser().getUid(),
+                                groupIds, timeUnix, "", adapter.isTagged);
+
+                        ref.child("Groups").child(YearbookActivity.currentGroup).addListenerForSingleValueEvent(new ValueEventListener() {
+                            @Override
+                            public void onDataChange(DataSnapshot dataSnapshot) {
+                                Group g = dataSnapshot.getValue(Group.class);
+                                if (g != null)  {
+                                    if (g.getPhotoIds() == null) {
+                                        g.setPhotoIds(new ArrayList<String>());
+                                    }
+                                    g.getPhotoIds().add(key);
+                                }
 
 
-                }catch (NullPointerException e)
-                {
+                                newPhotoRef.putFile(newPhotoUri).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                                    @Override
+                                    public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                                        newPhoto.setImageUrl(taskSnapshot.getDownloadUrl().toString());
+                                        ref.child("Photos").child(key).setValue(newPhoto);
+                                        //progressBar.setVisibility(ProgressBar.INVISIBLE);
+                                    }
+                                }).addOnFailureListener(new OnFailureListener() {
+                                    @Override
+                                    public void onFailure(@NonNull Exception e) {
+                                        Toast.makeText(getApplicationContext(), "Image failed to upload", Toast.LENGTH_SHORT);
+                                        //progressBar.setVisibility(ProgressBar.INVISIBLE);
+                                    }
+                                });
 
+                                ref.child("Groups").child(YearbookActivity.currentGroup).setValue(g);
+                            }
+
+                            @Override
+                            public void onCancelled(DatabaseError databaseError) { }
+                        });
+
+
+                    }catch (NullPointerException e)
+                    {
+
+                    }
                 }
-            }
 
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-                // ...
-            }
-        });
-
+                @Override
+                public void onCancelled(DatabaseError databaseError) {
+                    // ...
+                }
+            });
+        } catch (Exception e) {
+            Toast.makeText(getApplicationContext(), "ERROR IN TAGGING ACTIVITY",Toast.LENGTH_LONG);
+        }
         finish();
     }
 

@@ -15,12 +15,18 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.Toast;
+import android.widget.VideoView;
+import android.media.MediaPlayer;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.storage.FileDownloadTask;
+
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
+
+import java.io.File;
 
 import java.lang.reflect.Array;
 import java.util.ArrayList;
@@ -67,7 +73,7 @@ public class FeedAdapter extends RecyclerView.Adapter<FeedAdapter.ViewHolderWrap
     public void onBindViewHolder(final ViewHolderWrapper holder, int position) {
         //TODO what the heck is this repetition
         if (getItemViewType(position) == VIEW_TYPE_1_IMAGES) { //if 1 photo, load 1 photo
-            ((CustomViewHolder)holder).photo.setVisibility(View.VISIBLE);
+//            ((CustomViewHolder)holder).photo.setVisibility(View.VISIBLE);
             Photo p;
             try {
                 p = photoList.get(getStartingArraylistPosition(position));
@@ -79,18 +85,76 @@ public class FeedAdapter extends RecyclerView.Adapter<FeedAdapter.ViewHolderWrap
             String url = p.getImageUrl();
             Log.d("this is the url", url);
             StorageReference storageRef = FirebaseStorage.getInstance().getReferenceFromUrl(url);
-            storageRef.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>()
-            {
-                @Override
-                public void onSuccess(Uri uri)
-                {
-                    Glide.with(context)
-                            .load(uri)
-                            .diskCacheStrategy(DiskCacheStrategy.ALL)
-                            .into(((CustomViewHolder)holder).photo);
-                }
+//            storageRef.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>()
+//            {
+//                @Override
+//                public void onSuccess(Uri uri)
+//                {
+//                    Glide.with(context)
+//                            .load(uri)
+//                            .diskCacheStrategy(DiskCacheStrategy.ALL)
+//                            .into(((CustomViewHolder)holder).photo);
+//                }
+//
+//            });
 
-            });
+            if (url.contains("mp4")) {
+                //need to download file, then play it
+                final ArrayList<File> files = new ArrayList<>();
+                File localFile = null;
+                try {
+                    localFile = File.createTempFile("images", ".mp4");
+                    files.add(localFile);
+
+                } catch (Exception e) {
+
+                }
+                storageRef.getFile(localFile).addOnSuccessListener(new OnSuccessListener<FileDownloadTask.TaskSnapshot>() {
+                    @Override
+                    public void onSuccess(FileDownloadTask.TaskSnapshot taskSnapshot) {
+                        ((CustomViewHolder)holder).video.setVideoPath(files.get(0).getAbsolutePath());//uri);
+                        ((CustomViewHolder)holder).video.start();
+                        ((CustomViewHolder)holder).video.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
+                            @Override
+                            public void onPrepared(MediaPlayer mp) {
+                                mp.setLooping(true);
+                            }
+                        });
+                        ((CustomViewHolder) holder).photo.setVisibility(View.INVISIBLE);
+                    }
+                });
+
+//                storageRef.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>()
+//                {
+//                    @Override
+//                    public void onSuccess(Uri uri)
+//                    {
+//                        Uri bro = Uri.parse(uri.toString());
+//                        Glide.with(context)
+//                                .load(uri)
+//                                .diskCacheStrategy(DiskCacheStrategy.ALL)
+//                                .into(((CustomViewHolder)holder).photo);
+//                        //Uri bro = TaggingActivity.testbro;
+//                        ((CustomViewHolder)holder).video.setVideoURI(uri);//uri);
+//                        ((CustomViewHolder)holder).video.start();
+//                        //((CustomViewHolder) holder).photo.setVisibility(View.INVISIBLE);
+//                    }
+//
+//                });
+            } else {
+                storageRef.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>()
+                {
+                    @Override
+                    public void onSuccess(Uri uri)
+                    {
+                        Glide.with(context)
+                                .load(uri)
+                                .diskCacheStrategy(DiskCacheStrategy.ALL)
+                                .into(((CustomViewHolder)holder).photo);
+                    }
+
+                });
+            }
 
         } else if (getItemViewType(position) == VIEW_TYPE_2_IMAGES) { //if 2 photos, load 2 photos
             ((CustomViewHolder2)holder).photo.setVisibility(View.VISIBLE);
@@ -272,38 +336,40 @@ public class FeedAdapter extends RecyclerView.Adapter<FeedAdapter.ViewHolderWrap
 
     class CustomViewHolder extends ViewHolderWrapper {
         ImageView photo;
+        VideoView video;
         Photo photoObj;
 
         public CustomViewHolder(View view) {
             super(view);
             this.photo = (ImageView) view.findViewById(R.id.image1);
-            this.photo.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-
-                    photo.buildDrawingCache();
-                    Bitmap image= photo.getDrawingCache();
-                    currentImageClickedBitmap = image;
-                    currentPhotoLink = photoObj.getImageUrl();
-                    Intent intent = new Intent(YearbookActivity.context, FullScreenPhotoViewActivity.class);
-                    YearbookActivity.context.startActivity(intent);
-
-//                    LayoutInflater groupManager = LayoutInflater.from(YearbookActivity.activity);
-//                    View groupsView = groupManager.inflate(R.layout.flagging_view, null);
-//                    groupsView.findViewById(R.id.flagButton).setOnClickListener(new View.OnClickListener() {
-//                        @Override
-//                        public void onClick(View view) {
-//                            Toast.makeText(YearbookActivity.context, "Photo has been reported!", Toast.LENGTH_LONG).show();
-//                        }
-//                    });
-//                    android.app.AlertDialog.Builder alertDialogBuilder = new android.app.AlertDialog.Builder(YearbookActivity.activity);
+            video = (VideoView) view.findViewById(R.id.video1);
+//            this.photo.setOnClickListener(new View.OnClickListener() {
+//                @Override
+//                public void onClick(View view) {
 //
-//                    alertDialogBuilder.setView(groupsView);
-//                    alertDialogBuilder.setTitle("Flag as Inappropirate");
-//                    alertDialogBuilder.show();
-
-                }
-            });
+//                    photo.buildDrawingCache();
+//                    Bitmap image= photo.getDrawingCache();
+//                    currentImageClickedBitmap = image;
+//                    currentPhotoLink = photoObj.getImageUrl();
+//                    Intent intent = new Intent(YearbookActivity.context, FullScreenPhotoViewActivity.class);
+//                    YearbookActivity.context.startActivity(intent);
+//
+////                    LayoutInflater groupManager = LayoutInflater.from(YearbookActivity.activity);
+////                    View groupsView = groupManager.inflate(R.layout.flagging_view, null);
+////                    groupsView.findViewById(R.id.flagButton).setOnClickListener(new View.OnClickListener() {
+////                        @Override
+////                        public void onClick(View view) {
+////                            Toast.makeText(YearbookActivity.context, "Photo has been reported!", Toast.LENGTH_LONG).show();
+////                        }
+////                    });
+////                    android.app.AlertDialog.Builder alertDialogBuilder = new android.app.AlertDialog.Builder(YearbookActivity.activity);
+////
+////                    alertDialogBuilder.setView(groupsView);
+////                    alertDialogBuilder.setTitle("Flag as Inappropirate");
+////                    alertDialogBuilder.show();
+//
+//                }
+//            });
         }
     }
 
