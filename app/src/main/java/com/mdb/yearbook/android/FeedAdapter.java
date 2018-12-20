@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
@@ -16,18 +17,15 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.Toast;
 import android.widget.VideoView;
-import android.media.MediaPlayer;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.storage.FileDownloadTask;
-
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 
 import java.io.File;
-
 import java.lang.reflect.Array;
 import java.util.ArrayList;
 
@@ -85,21 +83,10 @@ public class FeedAdapter extends RecyclerView.Adapter<FeedAdapter.ViewHolderWrap
             String url = p.getImageUrl();
             Log.d("this is the url", url);
             StorageReference storageRef = FirebaseStorage.getInstance().getReferenceFromUrl(url);
-//            storageRef.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>()
-//            {
-//                @Override
-//                public void onSuccess(Uri uri)
-//                {
-//                    Glide.with(context)
-//                            .load(uri)
-//                            .diskCacheStrategy(DiskCacheStrategy.ALL)
-//                            .into(((CustomViewHolder)holder).photo);
-//                }
-//
-//            });
-
             if (url.contains("mp4")) {
                 //need to download file, then play it
+
+                //TODO: Display loading bar here
                 final ArrayList<File> files = new ArrayList<>();
                 File localFile = null;
                 try {
@@ -121,6 +108,7 @@ public class FeedAdapter extends RecyclerView.Adapter<FeedAdapter.ViewHolderWrap
                             }
                         });
                         ((CustomViewHolder) holder).photo.setVisibility(View.INVISIBLE);
+
                     }
                 });
 
@@ -151,10 +139,13 @@ public class FeedAdapter extends RecyclerView.Adapter<FeedAdapter.ViewHolderWrap
                                 .load(uri)
                                 .diskCacheStrategy(DiskCacheStrategy.ALL)
                                 .into(((CustomViewHolder)holder).photo);
+                        ((CustomViewHolder)holder).video.setVisibility(View.INVISIBLE);//uri);
+
                     }
 
                 });
             }
+
 
         } else if (getItemViewType(position) == VIEW_TYPE_2_IMAGES) { //if 2 photos, load 2 photos
             ((CustomViewHolder2)holder).photo.setVisibility(View.VISIBLE);
@@ -162,19 +153,51 @@ public class FeedAdapter extends RecyclerView.Adapter<FeedAdapter.ViewHolderWrap
             Photo p = photoList.get(getStartingArraylistPosition(position));
             ((CustomViewHolder2)holder).photoObj = p;
             String url = p.getImageUrl();
-            StorageReference storageRef = FirebaseStorage.getInstance().getReferenceFromUrl(url);
-            storageRef.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>()
-            {
-                @Override
-                public void onSuccess(Uri uri)
-                {
-                    Glide.with(context)
-                            .load(uri)
-                            .diskCacheStrategy(DiskCacheStrategy.ALL)
-                            .into(((CustomViewHolder2)holder).photo);
-                }
 
-            });
+
+            if (url.contains("mp4")) {
+                //need to download file, then play it
+                final ArrayList<File> files = new ArrayList<>();
+                File localFile = null;
+                try {
+                    localFile = File.createTempFile("images", ".mp4");
+                    files.add(localFile);
+
+                } catch (Exception e) {
+
+                }
+                StorageReference storageRef = FirebaseStorage.getInstance().getReferenceFromUrl(url);
+
+                storageRef.getFile(localFile).addOnSuccessListener(new OnSuccessListener<FileDownloadTask.TaskSnapshot>() {
+                    @Override
+                    public void onSuccess(FileDownloadTask.TaskSnapshot taskSnapshot) {
+                        ((CustomViewHolder2) holder).video.setVideoPath(files.get(0).getAbsolutePath());//uri);
+                        ((CustomViewHolder2) holder).video.start();
+                        ((CustomViewHolder2) holder).video.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
+                            @Override
+                            public void onPrepared(MediaPlayer mp) {
+                                mp.setLooping(true);
+                            }
+                        });
+                        ((CustomViewHolder2) holder).photo.setVisibility(View.INVISIBLE);
+
+                    }
+                });
+            } else {
+
+
+                StorageReference storageRef = FirebaseStorage.getInstance().getReferenceFromUrl(url);
+                storageRef.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+                    @Override
+                    public void onSuccess(Uri uri) {
+                        Glide.with(context)
+                                .load(uri)
+                                .diskCacheStrategy(DiskCacheStrategy.ALL)
+                                .into(((CustomViewHolder2) holder).photo);
+                    }
+
+                });
+            }
 
             Photo p2;
             try {
@@ -187,21 +210,53 @@ public class FeedAdapter extends RecyclerView.Adapter<FeedAdapter.ViewHolderWrap
 
 
                 StorageReference storageRef2 = FirebaseStorage.getInstance().getReferenceFromUrl(url2);
-                storageRef2.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>()
-                {
-                    @Override
-                    public void onSuccess(Uri uri)
-                    {
+                if (url2.contains("mp4")) {
+                    //need to download file, then play it
+                    final ArrayList<File> files = new ArrayList<>();
+                    File localFile = null;
+                    try {
+                        localFile = File.createTempFile("images", ".mp4");
+                        files.add(localFile);
 
-                        Glide.with(context)
-                                .load(uri)
-                                .diskCacheStrategy(DiskCacheStrategy.ALL)
-                                .into(((CustomViewHolder2)holder).photo2);
+                    } catch (Exception e) {
+
                     }
 
-                });
+                    storageRef2.getFile(localFile).addOnSuccessListener(new OnSuccessListener<FileDownloadTask.TaskSnapshot>() {
+                        @Override
+                        public void onSuccess(FileDownloadTask.TaskSnapshot taskSnapshot) {
+                            ((CustomViewHolder2) holder).video2.setVideoPath(files.get(0).getAbsolutePath());//uri);
+                            ((CustomViewHolder2) holder).video2.start();
+                            ((CustomViewHolder2) holder).video2.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
+                                @Override
+                                public void onPrepared(MediaPlayer mp) {
+                                    mp.setLooping(true);
+                                }
+                            });
+                            ((CustomViewHolder2) holder).photo2.setVisibility(View.INVISIBLE);
+
+                        }
+                    });
+                } else {
+
+
+                    storageRef2.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+                        @Override
+                        public void onSuccess(Uri uri) {
+                            ((CustomViewHolder2) holder).video2.start();
+
+                            Glide.with(context)
+                                    .load(uri)
+                                    .diskCacheStrategy(DiskCacheStrategy.ALL)
+                                    .into(((CustomViewHolder2) holder).photo2);
+                        }
+
+                    });
+                }
             } catch (Exception e) {
                 ((CustomViewHolder2)holder).photo2.setVisibility(View.INVISIBLE);
+                ((CustomViewHolder2) holder).video2.setVisibility(View.INVISIBLE);
+
             }
         }
         else { //else load 3
@@ -213,17 +268,46 @@ public class FeedAdapter extends RecyclerView.Adapter<FeedAdapter.ViewHolderWrap
             String url = p.getImageUrl();
 
             StorageReference storageRef = FirebaseStorage.getInstance().getReferenceFromUrl(url);
-            storageRef.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>()
-            {
-                @Override
-                public void onSuccess(Uri uri)
-                {
-                    Glide.with(context)
-                            .load(uri)
-                            .diskCacheStrategy(DiskCacheStrategy.ALL)
-                            .into(((CustomViewHolder3)holder).photo);
+            if (url.contains("mp4")) {
+                //need to download file, then play it
+                final ArrayList<File> files = new ArrayList<>();
+                File localFile = null;
+                try {
+                    localFile = File.createTempFile("images", ".mp4");
+                    files.add(localFile);
+
+                } catch (Exception e) {
+
                 }
-            });
+
+                storageRef.getFile(localFile).addOnSuccessListener(new OnSuccessListener<FileDownloadTask.TaskSnapshot>() {
+                    @Override
+                    public void onSuccess(FileDownloadTask.TaskSnapshot taskSnapshot) {
+                        ((CustomViewHolder3) holder).video.setVideoPath(files.get(0).getAbsolutePath());//uri);
+                        ((CustomViewHolder3) holder).video.start();
+                        ((CustomViewHolder3) holder).video.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
+                            @Override
+                            public void onPrepared(MediaPlayer mp) {
+                                mp.setLooping(true);
+                            }
+                        });
+                        ((CustomViewHolder3) holder).photo.setVisibility(View.INVISIBLE);
+
+                    }
+                });
+            } else {
+
+
+                storageRef.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+                    @Override
+                    public void onSuccess(Uri uri) {
+                        Glide.with(context)
+                                .load(uri)
+                                .diskCacheStrategy(DiskCacheStrategy.ALL)
+                                .into(((CustomViewHolder3) holder).photo);
+                    }
+                });
+            }
             Photo p2;
             try {
 
@@ -234,20 +318,51 @@ public class FeedAdapter extends RecyclerView.Adapter<FeedAdapter.ViewHolderWrap
                 Log.d("this is the url", url);
 
                 StorageReference storageRef2 = FirebaseStorage.getInstance().getReferenceFromUrl(url2);
-                storageRef2.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>()
-                {
-                    @Override
-                    public void onSuccess(Uri uri)
-                    {
-                        Glide.with(YearbookActivity.context)
-                                .load(uri)
-                                .diskCacheStrategy(DiskCacheStrategy.ALL)
-                                .into(((CustomViewHolder3)holder).photo2);
+                if (url2.contains("mp4")) {
+                    //need to download file, then play it
+                    final ArrayList<File> files = new ArrayList<>();
+                    File localFile = null;
+                    try {
+                        localFile = File.createTempFile("images", ".mp4");
+                        files.add(localFile);
+
+                    } catch (Exception e) {
+
                     }
 
-                });
+                    storageRef2.getFile(localFile).addOnSuccessListener(new OnSuccessListener<FileDownloadTask.TaskSnapshot>() {
+                        @Override
+                        public void onSuccess(FileDownloadTask.TaskSnapshot taskSnapshot) {
+                            ((CustomViewHolder3) holder).video2.setVideoPath(files.get(0).getAbsolutePath());//uri);
+                            ((CustomViewHolder3) holder).video2.start();
+                            ((CustomViewHolder3) holder).video2.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
+                                @Override
+                                public void onPrepared(MediaPlayer mp) {
+                                    mp.setLooping(true);
+                                }
+                            });
+                            ((CustomViewHolder3) holder).photo2.setVisibility(View.INVISIBLE);
+
+                        }
+                    });
+                } else {
+
+
+                    storageRef2.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+                        @Override
+                        public void onSuccess(Uri uri) {
+                            Glide.with(YearbookActivity.context)
+                                    .load(uri)
+                                    .diskCacheStrategy(DiskCacheStrategy.ALL)
+                                    .into(((CustomViewHolder3) holder).photo2);
+                        }
+
+                    });
+                }
             } catch (Exception e) {
                 ((CustomViewHolder3)holder).photo2.setVisibility(View.INVISIBLE);
+                ((CustomViewHolder3) holder).video2.setVisibility(View.INVISIBLE);
+
             }
 
             Photo p3;
@@ -261,20 +376,51 @@ public class FeedAdapter extends RecyclerView.Adapter<FeedAdapter.ViewHolderWrap
 
 
                 StorageReference storageRef3 = FirebaseStorage.getInstance().getReferenceFromUrl(url2);
-                storageRef3.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>()
-                {
-                    @Override
-                    public void onSuccess(Uri uri)
-                    {
-                        Glide.with(context)
-                                .load(uri)
-                                .diskCacheStrategy(DiskCacheStrategy.ALL)
-                                .into(((CustomViewHolder3)holder).photo3);
+                if (url2.contains("mp4")) {
+                    //need to download file, then play it
+                    final ArrayList<File> files = new ArrayList<>();
+                    File localFile = null;
+                    try {
+                        localFile = File.createTempFile("images", ".mp4");
+                        files.add(localFile);
+
+                    } catch (Exception e) {
+
                     }
 
-                });
+                    storageRef3.getFile(localFile).addOnSuccessListener(new OnSuccessListener<FileDownloadTask.TaskSnapshot>() {
+                        @Override
+                        public void onSuccess(FileDownloadTask.TaskSnapshot taskSnapshot) {
+                            ((CustomViewHolder3) holder).video3.setVideoPath(files.get(0).getAbsolutePath());//uri);
+                            ((CustomViewHolder3) holder).video3.start();
+                            ((CustomViewHolder3) holder).video3.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
+                                @Override
+                                public void onPrepared(MediaPlayer mp) {
+                                    mp.setLooping(true);
+                                }
+                            });
+                            ((CustomViewHolder3) holder).photo3.setVisibility(View.INVISIBLE);
+
+                        }
+                    });
+                } else {
+
+
+                    storageRef3.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+                        @Override
+                        public void onSuccess(Uri uri) {
+                            Glide.with(context)
+                                    .load(uri)
+                                    .diskCacheStrategy(DiskCacheStrategy.ALL)
+                                    .into(((CustomViewHolder3) holder).photo3);
+                        }
+
+                    });
+                }
             } catch (Exception e) {
                 ((CustomViewHolder3)holder).photo3.setVisibility(View.INVISIBLE);
+                ((CustomViewHolder3) holder).video3.setVisibility(View.INVISIBLE);
+
             }
         }
 
@@ -376,14 +522,19 @@ public class FeedAdapter extends RecyclerView.Adapter<FeedAdapter.ViewHolderWrap
     class CustomViewHolder2 extends ViewHolderWrapper {
         ImageView photo;
         ImageView photo2;
+        VideoView video;
+        VideoView video2;
 
         Photo photoObj;
         Photo photoObj2;
 
         public CustomViewHolder2(View view) {
             super(view);
-            this.photo = (ImageView) view.findViewById(R.id.image2);
-            this.photo2 = (ImageView) view.findViewById(R.id.image3);
+            this.photo = (ImageView) view.findViewById(R.id.image1);
+            this.photo2 = (ImageView) view.findViewById(R.id.image2);
+            video = (VideoView) view.findViewById(R.id.video1);
+            video2 = (VideoView) view.findViewById(R.id.video2);
+
 
             this.photo.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -419,6 +570,10 @@ public class FeedAdapter extends RecyclerView.Adapter<FeedAdapter.ViewHolderWrap
         ImageView photo2;
         ImageView photo3;
 
+        VideoView video;
+        VideoView video2;
+        VideoView video3;
+
         Photo photoObj;
         Photo photoObj2;
         Photo photoObj3;
@@ -426,9 +581,14 @@ public class FeedAdapter extends RecyclerView.Adapter<FeedAdapter.ViewHolderWrap
         public CustomViewHolder3(View view) {
             super(view);
 
-            this.photo = (ImageView) view.findViewById(R.id.image4);
-            this.photo2 = (ImageView) view.findViewById(R.id.image5);
-            this.photo3 = (ImageView) view.findViewById(R.id.image6);
+            this.photo = (ImageView) view.findViewById(R.id.image1);
+            this.photo2 = (ImageView) view.findViewById(R.id.image2);
+            this.photo3 = (ImageView) view.findViewById(R.id.image3);
+
+            video = (VideoView) view.findViewById(R.id.video1);
+            video2 = (VideoView) view.findViewById(R.id.video2);
+            video3 = (VideoView) view.findViewById(R.id.video3);
+
 
             //TODO again
             this.photo.setOnClickListener(new View.OnClickListener() {
