@@ -12,6 +12,15 @@
 
     <!-- This FrameLayout insets its children based on system windows using
          android:fitsSystemWindows. -->
+    <VideoView
+        android:id="@+id/video1"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:adjustViewBounds="true"
+        android:layout_gravity="center"
+        android:keepScreenOn="true"
+        android:layout_margin="2dp"/>
+
     <ImageView
         android:id="@+id/fullscreen_content"
         android:layout_width="match_parent"
@@ -20,6 +29,8 @@
         android:gravity="center"
         android:keepScreenOn="true"
         android:src="@drawable/camerafabicon" />
+
+
 
     <FrameLayout
         android:layout_width="match_parent"

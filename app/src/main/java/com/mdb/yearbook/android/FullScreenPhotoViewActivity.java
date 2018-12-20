@@ -7,6 +7,7 @@ import android.content.ContextWrapper;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.media.Image;
+import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Environment;
 import android.support.v4.app.ActivityCompat;
@@ -20,12 +21,17 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.Toast;
+import android.widget.VideoView;
 
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.storage.FileDownloadTask;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -134,7 +140,12 @@ public class FullScreenPhotoViewActivity extends AppCompatActivity {
 
         mVisible = true;
         mControlsView = findViewById(R.id.fullscreen_content_controls);
-        mContentView = findViewById(R.id.fullscreen_content);
+        if (FeedAdapter.isVideoClicked) {
+            mContentView = findViewById(R.id.video1);
+        } else {
+            mContentView = findViewById(R.id.fullscreen_content);
+
+        }
 
         //Bundle extras = getIntent().getExtras();
         //Bitmap bmp = (Bitmap) extras.getParcelable("imagebitmap");
@@ -143,7 +154,37 @@ public class FullScreenPhotoViewActivity extends AppCompatActivity {
 
         //imageUri = Uri.parse(getIntent().getStringExtra("imageUri"));
 
-        ((ImageView) findViewById(R.id.fullscreen_content)).setImageBitmap(FeedAdapter.currentImageClickedBitmap);
+        if (FeedAdapter.isVideoClicked) {
+            StorageReference storageRef = FirebaseStorage.getInstance().getReferenceFromUrl(FeedAdapter.videoURLClickedFirebase);
+            final ArrayList<File> files = new ArrayList<>();
+            File localFile = null;
+            try {
+                localFile = File.createTempFile("images", ".mp4");
+                files.add(localFile);
+
+            } catch (Exception e) {
+
+            }
+            storageRef.getFile(localFile).addOnSuccessListener(new OnSuccessListener<FileDownloadTask.TaskSnapshot>() {
+                @Override
+                public void onSuccess(FileDownloadTask.TaskSnapshot taskSnapshot) {
+                    ((VideoView) findViewById(R.id.video1)).setVideoPath(files.get(0).getAbsolutePath());//uri);
+                    ((VideoView) findViewById(R.id.video1)).start();
+                    ((VideoView) findViewById(R.id.video1)).setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
+                        @Override
+                        public void onPrepared(MediaPlayer mp) {
+                            mp.setLooping(true);
+                        }
+                    });
+                    ((ImageView) findViewById(R.id.fullscreen_content)).setVisibility(View.INVISIBLE);
+
+                }
+            });
+
+        } else {
+            ((ImageView) findViewById(R.id.fullscreen_content)).setImageBitmap(FeedAdapter.currentImageClickedBitmap);
+
+        }
 
 
 
@@ -218,41 +259,29 @@ public class FullScreenPhotoViewActivity extends AppCompatActivity {
         /*
         // Initialize ContextWrapper
         ContextWrapper wrapper = new ContextWrapper(getApplicationContext());
-
         // Initializing a new file
         // The bellow line return a directory in internal storage
         File file = wrapper.getDir("Images",MODE_PRIVATE);
-
         // Create a file to save the image
         file = new File(file, "bro" +".jpg");
-
-
         try{
             // Initialize a new OutputStream
             OutputStream stream = null;
             file.createNewFile();
-
-
             // If the output file exists, it can be replaced or appended to it
             stream = new FileOutputStream(file);
-
             // Compress the bitmap
             bitmap.compress(Bitmap.CompressFormat.JPEG,100,stream);
-
             // Flushes the stream
             stream.flush();
-
             // Closes the stream
             stream.close();
-
         }catch (IOException e) // Catch the exception
         {
             e.printStackTrace();
         }
-
         // Parse the gallery image url to uri
         Uri savedImageURI = Uri.parse(file.getAbsolutePath());
-
         // Return the saved image Uri
         return savedImageURI;
         */

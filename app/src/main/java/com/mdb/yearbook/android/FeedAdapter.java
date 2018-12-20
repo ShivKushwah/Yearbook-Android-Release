@@ -12,6 +12,7 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
@@ -43,6 +44,9 @@ public class FeedAdapter extends RecyclerView.Adapter<FeedAdapter.ViewHolderWrap
 
     public static Bitmap currentImageClickedBitmap;
     public static String currentPhotoLink;
+    public static boolean isVideoClicked;
+    public static String videoPathClicked;
+    public static String videoURLClickedFirebase;
 
     private Context context;
     ArrayList<Photo> photoList;
@@ -96,6 +100,7 @@ public class FeedAdapter extends RecyclerView.Adapter<FeedAdapter.ViewHolderWrap
                 } catch (Exception e) {
 
                 }
+                ((CustomViewHolder) holder).videoURLFirebase = url;
                 storageRef.getFile(localFile).addOnSuccessListener(new OnSuccessListener<FileDownloadTask.TaskSnapshot>() {
                     @Override
                     public void onSuccess(FileDownloadTask.TaskSnapshot taskSnapshot) {
@@ -167,7 +172,7 @@ public class FeedAdapter extends RecyclerView.Adapter<FeedAdapter.ViewHolderWrap
 
                 }
                 StorageReference storageRef = FirebaseStorage.getInstance().getReferenceFromUrl(url);
-
+                ((CustomViewHolder2) holder).videoURLFirebase = url;
                 storageRef.getFile(localFile).addOnSuccessListener(new OnSuccessListener<FileDownloadTask.TaskSnapshot>() {
                     @Override
                     public void onSuccess(FileDownloadTask.TaskSnapshot taskSnapshot) {
@@ -221,7 +226,7 @@ public class FeedAdapter extends RecyclerView.Adapter<FeedAdapter.ViewHolderWrap
                     } catch (Exception e) {
 
                     }
-
+                    ((CustomViewHolder2) holder).videoURLFirebase2 = url2;
                     storageRef2.getFile(localFile).addOnSuccessListener(new OnSuccessListener<FileDownloadTask.TaskSnapshot>() {
                         @Override
                         public void onSuccess(FileDownloadTask.TaskSnapshot taskSnapshot) {
@@ -279,6 +284,7 @@ public class FeedAdapter extends RecyclerView.Adapter<FeedAdapter.ViewHolderWrap
                 } catch (Exception e) {
 
                 }
+                ((CustomViewHolder3) holder).videoURLFirebase = url;
 
                 storageRef.getFile(localFile).addOnSuccessListener(new OnSuccessListener<FileDownloadTask.TaskSnapshot>() {
                     @Override
@@ -316,6 +322,8 @@ public class FeedAdapter extends RecyclerView.Adapter<FeedAdapter.ViewHolderWrap
                 String url2 = p2.getImageUrl();
 
                 Log.d("this is the url", url);
+
+                ((CustomViewHolder3) holder).videoURLFirebase2 = url2;
 
                 StorageReference storageRef2 = FirebaseStorage.getInstance().getReferenceFromUrl(url2);
                 if (url2.contains("mp4")) {
@@ -387,6 +395,7 @@ public class FeedAdapter extends RecyclerView.Adapter<FeedAdapter.ViewHolderWrap
                     } catch (Exception e) {
 
                     }
+                    ((CustomViewHolder3) holder).videoURLFirebase3 = url2;
 
                     storageRef3.getFile(localFile).addOnSuccessListener(new OnSuccessListener<FileDownloadTask.TaskSnapshot>() {
                         @Override
@@ -483,39 +492,52 @@ public class FeedAdapter extends RecyclerView.Adapter<FeedAdapter.ViewHolderWrap
     class CustomViewHolder extends ViewHolderWrapper {
         ImageView photo;
         VideoView video;
+        String videoURLFirebase;
+
         Photo photoObj;
 
         public CustomViewHolder(View view) {
             super(view);
             this.photo = (ImageView) view.findViewById(R.id.image1);
             video = (VideoView) view.findViewById(R.id.video1);
-//            this.photo.setOnClickListener(new View.OnClickListener() {
-//                @Override
-//                public void onClick(View view) {
+            this.video.setOnTouchListener(new View.OnTouchListener() {
+                @Override
+                public boolean onTouch(View view, MotionEvent motionEvent) {
+                    isVideoClicked = true;
+                    videoURLClickedFirebase = videoURLFirebase;
+                    Intent intent = new Intent(YearbookActivity.context, FullScreenPhotoViewActivity.class);
+                    YearbookActivity.context.startActivity(intent);
+                    return false;
+                }
+            });
+            this.photo.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+
+                    photo.buildDrawingCache();
+                    isVideoClicked = false;
+                    Bitmap image= photo.getDrawingCache();
+                    currentImageClickedBitmap = image;
+                    currentPhotoLink = photoObj.getImageUrl();
+                    Intent intent = new Intent(YearbookActivity.context, FullScreenPhotoViewActivity.class);
+                    YearbookActivity.context.startActivity(intent);
+
+//                    LayoutInflater groupManager = LayoutInflater.from(YearbookActivity.activity);
+//                    View groupsView = groupManager.inflate(R.layout.flagging_view, null);
+//                    groupsView.findViewById(R.id.flagButton).setOnClickListener(new View.OnClickListener() {
+//                        @Override
+//                        public void onClick(View view) {
+//                            Toast.makeText(YearbookActivity.context, "Photo has been reported!", Toast.LENGTH_LONG).show();
+//                        }
+//                    });
+//                    android.app.AlertDialog.Builder alertDialogBuilder = new android.app.AlertDialog.Builder(YearbookActivity.activity);
 //
-//                    photo.buildDrawingCache();
-//                    Bitmap image= photo.getDrawingCache();
-//                    currentImageClickedBitmap = image;
-//                    currentPhotoLink = photoObj.getImageUrl();
-//                    Intent intent = new Intent(YearbookActivity.context, FullScreenPhotoViewActivity.class);
-//                    YearbookActivity.context.startActivity(intent);
-//
-////                    LayoutInflater groupManager = LayoutInflater.from(YearbookActivity.activity);
-////                    View groupsView = groupManager.inflate(R.layout.flagging_view, null);
-////                    groupsView.findViewById(R.id.flagButton).setOnClickListener(new View.OnClickListener() {
-////                        @Override
-////                        public void onClick(View view) {
-////                            Toast.makeText(YearbookActivity.context, "Photo has been reported!", Toast.LENGTH_LONG).show();
-////                        }
-////                    });
-////                    android.app.AlertDialog.Builder alertDialogBuilder = new android.app.AlertDialog.Builder(YearbookActivity.activity);
-////
-////                    alertDialogBuilder.setView(groupsView);
-////                    alertDialogBuilder.setTitle("Flag as Inappropirate");
-////                    alertDialogBuilder.show();
-//
-//                }
-//            });
+//                    alertDialogBuilder.setView(groupsView);
+//                    alertDialogBuilder.setTitle("Flag as Inappropirate");
+//                    alertDialogBuilder.show();
+
+                }
+            });
         }
     }
 
@@ -524,6 +546,10 @@ public class FeedAdapter extends RecyclerView.Adapter<FeedAdapter.ViewHolderWrap
         ImageView photo2;
         VideoView video;
         VideoView video2;
+        String videoURLFirebase;
+        String videoURLFirebase2;
+
+
 
         Photo photoObj;
         Photo photoObj2;
@@ -535,11 +561,33 @@ public class FeedAdapter extends RecyclerView.Adapter<FeedAdapter.ViewHolderWrap
             video = (VideoView) view.findViewById(R.id.video1);
             video2 = (VideoView) view.findViewById(R.id.video2);
 
+            this.video.setOnTouchListener(new View.OnTouchListener() {
+                @Override
+                public boolean onTouch(View view, MotionEvent motionEvent) {
+                    isVideoClicked = true;
+                    videoURLClickedFirebase = videoURLFirebase;
+                    Intent intent = new Intent(YearbookActivity.context, FullScreenPhotoViewActivity.class);
+                    YearbookActivity.context.startActivity(intent);
+                    return false;
+                }
+            });
+
+            this.video2.setOnTouchListener(new View.OnTouchListener() {
+                @Override
+                public boolean onTouch(View view, MotionEvent motionEvent) {
+                    isVideoClicked = true;
+                    videoURLClickedFirebase = videoURLFirebase2;
+                    Intent intent = new Intent(YearbookActivity.context, FullScreenPhotoViewActivity.class);
+                    YearbookActivity.context.startActivity(intent);
+                    return false;
+                }
+            });
+
 
             this.photo.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-
+                    isVideoClicked = false;
                     photo.buildDrawingCache();
                     Bitmap image= photo.getDrawingCache();
                     currentImageClickedBitmap = image;
@@ -552,7 +600,7 @@ public class FeedAdapter extends RecyclerView.Adapter<FeedAdapter.ViewHolderWrap
             this.photo2.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-
+                    isVideoClicked = false;
                     photo2.buildDrawingCache();
                     Bitmap image= photo2.getDrawingCache();
                     currentImageClickedBitmap = image;
@@ -574,6 +622,10 @@ public class FeedAdapter extends RecyclerView.Adapter<FeedAdapter.ViewHolderWrap
         VideoView video2;
         VideoView video3;
 
+        String videoURLFirebase;
+        String videoURLFirebase2;
+        String videoURLFirebase3;
+
         Photo photoObj;
         Photo photoObj2;
         Photo photoObj3;
@@ -589,12 +641,47 @@ public class FeedAdapter extends RecyclerView.Adapter<FeedAdapter.ViewHolderWrap
             video2 = (VideoView) view.findViewById(R.id.video2);
             video3 = (VideoView) view.findViewById(R.id.video3);
 
+            this.video.setOnTouchListener(new View.OnTouchListener() {
+                @Override
+                public boolean onTouch(View view, MotionEvent motionEvent) {
+                    isVideoClicked = true;
+                    videoURLClickedFirebase = videoURLFirebase;
+                    Intent intent = new Intent(YearbookActivity.context, FullScreenPhotoViewActivity.class);
+                    YearbookActivity.context.startActivity(intent);
+                    return false;
+                }
+            });
+
+            this.video2.setOnTouchListener(new View.OnTouchListener() {
+                @Override
+                public boolean onTouch(View view, MotionEvent motionEvent) {
+                    isVideoClicked = true;
+                    videoURLClickedFirebase = videoURLFirebase2;
+                    Intent intent = new Intent(YearbookActivity.context, FullScreenPhotoViewActivity.class);
+                    YearbookActivity.context.startActivity(intent);
+                    return false;
+                }
+            });
+
+
+            this.video3.setOnTouchListener(new View.OnTouchListener() {
+                @Override
+                public boolean onTouch(View view, MotionEvent motionEvent) {
+                    isVideoClicked = true;
+                    videoURLClickedFirebase = videoURLFirebase3;
+                    Intent intent = new Intent(YearbookActivity.context, FullScreenPhotoViewActivity.class);
+                    YearbookActivity.context.startActivity(intent);
+                    return false;
+                }
+            });
+
+
 
             //TODO again
             this.photo.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-
+                    isVideoClicked = false;
                     photo.buildDrawingCache();
                     Bitmap image= photo.getDrawingCache();
                     currentImageClickedBitmap = image;
@@ -607,7 +694,7 @@ public class FeedAdapter extends RecyclerView.Adapter<FeedAdapter.ViewHolderWrap
             this.photo2.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-
+                    isVideoClicked = false;
                     photo2.buildDrawingCache();
                     Bitmap image= photo2.getDrawingCache();
                     currentImageClickedBitmap = image;
@@ -620,7 +707,7 @@ public class FeedAdapter extends RecyclerView.Adapter<FeedAdapter.ViewHolderWrap
             this.photo3.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-
+                    isVideoClicked = false;
                     photo3.buildDrawingCache();
                     Bitmap image= photo3.getDrawingCache();
                     currentImageClickedBitmap = image;
