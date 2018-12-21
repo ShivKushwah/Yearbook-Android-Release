@@ -47,7 +47,8 @@
             android:label="@string/title_activity_full_screen_photo_view"
             android:theme="@style/FullscreenTheme" />
         <activity android:name=".AddDescriptionActivity" />
-        <activity android:name=".SettingsActivity"/>
+        <activity android:name=".SettingsActivity" />
+        <activity android:name=".PhotoOptionsActivity"></activity>
     </application>
 
 </manifest>

@@ -47,22 +47,6 @@
             android:orientation="horizontal"
             tools:ignore="UselessParent">
 
-            <Button
-                android:id="@+id/flagButton2"
-                style="?metaButtonBarButtonStyle"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="Report Photo" />
-
-            <Button
-                android:id="@+id/shareButton"
-                style="?metaButtonBarButtonStyle"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="Share" />
-
         </LinearLayout>
     </FrameLayout>
 

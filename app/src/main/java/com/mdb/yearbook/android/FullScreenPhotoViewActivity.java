@@ -1,9 +1,11 @@
 package com.mdb.yearbook.android;
 
+import android.*;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
 import android.content.ContextWrapper;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.media.Image;
@@ -17,6 +19,8 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.ImageView;
@@ -200,11 +204,71 @@ public class FullScreenPhotoViewActivity extends AppCompatActivity {
         // Upon interacting with UI controls, delay any scheduled hide()
         // operations to prevent the jarring behavior of controls going away
         // while interacting with the UI.
-        findViewById(R.id.flagButton2).setOnTouchListener(mDelayHideTouchListener);
-        findViewById(R.id.flagButton2).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                //Log.d("KIRAT", "KIRAT");
+//        findViewById(R.id.flagButton2).setOnTouchListener(mDelayHideTouchListener);
+//        findViewById(R.id.flagButton2).setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//                //Log.d("KIRAT", "KIRAT");
+//                Toast.makeText(YearbookActivity.context, "Photo has been reported!", Toast.LENGTH_LONG).show();
+//                final DatabaseReference mDatabase = FirebaseDatabase.getInstance().getReference();
+//                mDatabase.child("Flagged").addListenerForSingleValueEvent(new ValueEventListener() {
+//                    @Override
+//                    public void onDataChange(DataSnapshot dataSnapshot) {
+//
+//                        try {
+//                            ArrayList<String> flagging = new ArrayList<String>();
+//                            flagging = (ArrayList) dataSnapshot.getValue();
+//                            flagging.add(FeedAdapter.currentPhotoLink);
+//                            mDatabase.child("Flagged").setValue(flagging);
+//                        } catch (Exception e) {
+//                            ArrayList<String> flagging = new ArrayList<String>();
+//                            flagging = new ArrayList<String>();
+//                            flagging.add(FeedAdapter.currentPhotoLink);
+//                            mDatabase.child("Flagged").setValue(flagging);
+//                        }
+//
+//
+//
+//                    }
+//
+//                    @Override
+//                    public void onCancelled(DatabaseError databaseError) {
+//
+//                    }
+//                });
+//
+//
+//
+//            }
+//        });
+//
+//        findViewById(R.id.shareButton).setOnTouchListener(mDelayHideTouchListener);
+//        findViewById(R.id.shareButton).setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//                Toast.makeText(YearbookActivity.context, "Downloaded to /DCIM/Yearbook/ !", Toast.LENGTH_LONG).show();
+//                verifyStoragePermissions((Activity) FullScreenPhotoViewActivity.context);
+//                String path = saveImageToInternalStorage(FeedAdapter.currentImageClickedBitmap);
+//
+//            }
+//        });
+
+    }
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.full_screen_menu, menu);
+        return super.onCreateOptionsMenu(menu);
+    }
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.options:
+
+                break;
+            case R.id.sharePhoto:
+                Toast.makeText(YearbookActivity.context, "Downloaded to /DCIM/Yearbook/ !", Toast.LENGTH_LONG).show();
+                verifyStoragePermissions((Activity) FullScreenPhotoViewActivity.context);
+                String path = saveImageToInternalStorage(FeedAdapter.currentImageClickedBitmap);
+                break;
+            case R.id.reportPhoto:
                 Toast.makeText(YearbookActivity.context, "Photo has been reported!", Toast.LENGTH_LONG).show();
                 final DatabaseReference mDatabase = FirebaseDatabase.getInstance().getReference();
                 mDatabase.child("Flagged").addListenerForSingleValueEvent(new ValueEventListener() {
@@ -223,8 +287,6 @@ public class FullScreenPhotoViewActivity extends AppCompatActivity {
                             mDatabase.child("Flagged").setValue(flagging);
                         }
 
-
-
                     }
 
                     @Override
@@ -232,28 +294,10 @@ public class FullScreenPhotoViewActivity extends AppCompatActivity {
 
                     }
                 });
-
-
-
-            }
-        });
-
-        findViewById(R.id.shareButton).setOnTouchListener(mDelayHideTouchListener);
-        findViewById(R.id.shareButton).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Toast.makeText(YearbookActivity.context, "Downloaded to /DCIM/Yearbook/ !", Toast.LENGTH_LONG).show();
-                verifyStoragePermissions((Activity) FullScreenPhotoViewActivity.context);
-                String path = saveImageToInternalStorage(FeedAdapter.currentImageClickedBitmap);
-
-
-
-
-            }
-        });
-
+                break;
+        }
+        return super.onOptionsItemSelected(item);
     }
-
     // Custom method to save a bitmap into internal storage
     protected String saveImageToInternalStorage(Bitmap bitmap){
         /*
