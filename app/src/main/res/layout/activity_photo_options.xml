@@ -21,44 +21,44 @@
 
     <TextView
         android:id="@+id/editDescription"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="0dp"
+        android:layout_height="25dp"
         android:layout_marginBottom="8dp"
         android:layout_marginEnd="8dp"
         android:layout_marginStart="8dp"
-        android:layout_marginTop="32dp"
+        android:layout_marginTop="16dp"
         android:text="Edit Description"
+        android:textAlignment="center"
         android:textColor="@color/colorBlack"
         android:textSize="18sp"
-        app:layout_constraintBottom_toTopOf="@+id/textView3"
+        app:layout_constraintBottom_toTopOf="@+id/editDescriptionText"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.502"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/deletePhoto"
         app:layout_constraintVertical_bias="0.0" />
 
-    <TextView
-        android:id="@+id/textView3"
+    <EditText
+        android:id="@+id/editDescriptionText"
         android:layout_width="0dp"
-        android:layout_height="177dp"
+        android:layout_height="0dp"
         android:layout_marginBottom="8dp"
-        android:layout_marginEnd="8dp"
-        android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
-        android:text="Edit Description"
-        app:layout_constraintBottom_toTopOf="@+id/cancelButton"
+        android:hint="Edit Photo Caption"
+        android:paddingHorizontal="20dp"
+        android:textAlignment="center"
+        app:layout_constraintBottom_toTopOf="@+id/editTags"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/editDescription" />
 
     <Button
-        android:id="@+id/cancelButton"
+        android:id="@+id/editTags"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginBottom="8dp"
         android:layout_marginStart="8dp"
-        android:text="CANCEL"
+        android:text="Edit Tags"
         app:layout_constraintBottom_toBottomOf="@+id/saveButton"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="@+id/saveButton" />
@@ -66,10 +66,11 @@
     <Button
         android:id="@+id/saveButton"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_height="48dp"
+        android:layout_marginBottom="8dp"
         android:layout_marginEnd="8dp"
         android:text="SAVE"
-        app:layout_constraintEnd_toEndOf="parent"
-        tools:layout_editor_absoluteY="428dp" />
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
 
 </android.support.constraint.ConstraintLayout>

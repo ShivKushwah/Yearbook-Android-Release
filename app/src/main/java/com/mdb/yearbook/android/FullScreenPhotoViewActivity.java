@@ -261,6 +261,8 @@ public class FullScreenPhotoViewActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.options:
+                Intent intent = new Intent(this, PhotoOptionsActivity.class);
+                startActivity(intent);
 
                 break;
             case R.id.sharePhoto:

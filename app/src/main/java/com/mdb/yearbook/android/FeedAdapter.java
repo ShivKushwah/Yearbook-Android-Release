@@ -641,6 +641,8 @@ public class FeedAdapter extends RecyclerView.Adapter<FeedAdapter.ViewHolderWrap
             video2 = (VideoView) view.findViewById(R.id.video2);
             video3 = (VideoView) view.findViewById(R.id.video3);
 
+            // TO DO: HANDLE VIDEOS
+
             this.video.setOnTouchListener(new View.OnTouchListener() {
                 @Override
                 public boolean onTouch(View view, MotionEvent motionEvent) {
@@ -687,6 +689,7 @@ public class FeedAdapter extends RecyclerView.Adapter<FeedAdapter.ViewHolderWrap
                     currentImageClickedBitmap = image;
                     currentPhotoLink = photoObj.getImageUrl();
                     Intent intent = new Intent(YearbookActivity.context, FullScreenPhotoViewActivity.class);
+                    //                    intent.putExtra("Photo", photoObj);
                     YearbookActivity.context.startActivity(intent);
                 }
             });
