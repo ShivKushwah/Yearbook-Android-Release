@@ -9,6 +9,9 @@ import android.view.View;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
+import java.time.Year;
 
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -28,12 +31,47 @@ public class PhotoOptionsActivity extends AppCompatActivity {
         protected void onCreate(Bundle savedInstanceState) {
                 super.onCreate(savedInstanceState);
                 setContentView(R.layout.activity_photo_options);
+                DatabaseReference ref = FirebaseDatabase.getInstance().getReference();
 
+                final String key = FeedAdapter.currentPhotoLink.substring(FeedAdapter.currentPhotoLink.indexOf("%") +3, FeedAdapter.currentPhotoLink.indexOf(".jpg")); // FIX
+                ref.child("Photos").child(key).child("caption").addValueEventListener(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(DataSnapshot dataSnapshot) {
+                                String s = dataSnapshot.getValue(String.class);
+                                EditText e = (EditText) findViewById(R.id.editDescriptionText);
+                                e.setText(s);
+                        }
+
+                        @Override
+                        public void onCancelled(DatabaseError databaseError) {
+                        }
+                });
 
                 findViewById(R.id.deletePhoto).setOnClickListener(new View.OnClickListener() {
                         //            get photoid - iterate over group ids, iterate through each group's photo ids and remove the photo id
                         // remove from storage as well
                         public void onClick(View view) {
+                                final String key = FeedAdapter.currentPhotoLink.substring(FeedAdapter.currentPhotoLink.indexOf("%") +3, FeedAdapter.currentPhotoLink.indexOf(".jpg")); // FIX
+
+                                YearbookActivity.mDatabase.child("Groups").child(YearbookActivity.currentGroup).child("photoIds").child(key).removeValue();
+
+                                StorageReference photoRef = FirebaseStorage.getInstance().getReferenceFromUrl(FeedAdapter.currentPhotoLink);
+
+                                photoRef.delete().addOnSuccessListener(new OnSuccessListener<Void>() {
+                                        @Override
+                                        public void onSuccess(Void aVoid) {
+                                                // File deleted successfully
+                                        }
+                                }).addOnFailureListener(new OnFailureListener() {
+                                        @Override
+                                        public void onFailure(@NonNull Exception exception) {
+                                                // Uh-oh, an error occurred!
+                                        }
+                                });
+                                YearbookActivity.mDatabase.child("Photos").child(key).removeValue();
+                                Intent i = new Intent(PhotoOptionsActivity.this, YearbookActivity.class);
+                                startActivity(i);
+                                finish();
 
                         }
                 });
@@ -78,6 +116,7 @@ public class PhotoOptionsActivity extends AppCompatActivity {
                                 });
                                 Intent i = new Intent(PhotoOptionsActivity.this, YearbookActivity.class);
                                 startActivity(i);
+                                finish();
                         }
                 });
         }
