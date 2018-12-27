@@ -26,6 +26,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 public class PhotoOptionsActivity extends AppCompatActivity {
+        private String key;
 
         @Override
         protected void onCreate(Bundle savedInstanceState) {
@@ -33,7 +34,12 @@ public class PhotoOptionsActivity extends AppCompatActivity {
                 setContentView(R.layout.activity_photo_options);
                 DatabaseReference ref = FirebaseDatabase.getInstance().getReference();
 
-                final String key = FeedAdapter.currentPhotoLink.substring(FeedAdapter.currentPhotoLink.indexOf("%") +3, FeedAdapter.currentPhotoLink.indexOf(".jpg")); // FIX
+//                final String key = FeedAdapter.currentPhotoLink.substring(FeedAdapter.currentPhotoLink.indexOf("%") +3, FeedAdapter.currentPhotoLink.indexOf(".jpg")); // FIX
+                if (FeedAdapter.currentPhotoLink != null) {
+                        key = FeedAdapter.currentPhotoLink.substring(FeedAdapter.currentPhotoLink.indexOf("%") +3, FeedAdapter.currentPhotoLink.indexOf(".jpg"));
+                } else {
+                        key = FeedAdapter.videoURLClickedFirebase.substring(FeedAdapter.videoURLClickedFirebase.indexOf("%") +3, FeedAdapter.videoURLClickedFirebase.indexOf(".mp4"));
+                }
                 ref.child("Photos").child(key).child("caption").addValueEventListener(new ValueEventListener() {
                         @Override
                         public void onDataChange(DataSnapshot dataSnapshot) {
@@ -51,11 +57,16 @@ public class PhotoOptionsActivity extends AppCompatActivity {
                         //            get photoid - iterate over group ids, iterate through each group's photo ids and remove the photo id
                         // remove from storage as well
                         public void onClick(View view) {
-                                final String key = FeedAdapter.currentPhotoLink.substring(FeedAdapter.currentPhotoLink.indexOf("%") +3, FeedAdapter.currentPhotoLink.indexOf(".jpg")); // FIX
+//                                final String key = FeedAdapter.currentPhotoLink.substring(FeedAdapter.currentPhotoLink.indexOf("%") +3, FeedAdapter.currentPhotoLink.indexOf(".jpg")); // FIX
 
                                 YearbookActivity.mDatabase.child("Groups").child(YearbookActivity.currentGroup).child("photoIds").child(key).removeValue();
 
-                                StorageReference photoRef = FirebaseStorage.getInstance().getReferenceFromUrl(FeedAdapter.currentPhotoLink);
+                                StorageReference photoRef;
+                                if (FeedAdapter.currentPhotoLink != null)
+                                        photoRef = FirebaseStorage.getInstance().getReferenceFromUrl(FeedAdapter.currentPhotoLink);
+                                else {
+                                        photoRef = FirebaseStorage.getInstance().getReferenceFromUrl(FeedAdapter.videoURLClickedFirebase);
+                                }
 
                                 photoRef.delete().addOnSuccessListener(new OnSuccessListener<Void>() {
                                         @Override
@@ -87,7 +98,7 @@ public class PhotoOptionsActivity extends AppCompatActivity {
                         public void onClick(View view) {
                                 EditText edit = (EditText) findViewById(R.id.editDescriptionText);
                                 final String newDescription = edit.getText().toString();
-                                final String key = FeedAdapter.currentPhotoLink.substring(FeedAdapter.currentPhotoLink.indexOf("%") +3, FeedAdapter.currentPhotoLink.indexOf(".jpg")); // FIX
+//                                final String key = FeedAdapter.currentPhotoLink.substring(FeedAdapter.currentPhotoLink.indexOf("%") +3, FeedAdapter.currentPhotoLink.indexOf(".jpg")); // FIX
                                 YearbookActivity.mDatabase.child("Photos").child(key).addValueEventListener(new ValueEventListener() {
                                         @Override
                                         public void onDataChange(DataSnapshot dataSnapshot) {
