@@ -859,13 +859,13 @@ public class YearbookActivity extends AppCompatActivity {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
-            case R.id.videoButton:
-                ActivityCompat.requestPermissions(activity,
-                        new String[]{Manifest.permission.CAMERA, Manifest.permission.WRITE_EXTERNAL_STORAGE},
-                        REQUEST_VIDEO_CAPTURE); //Take Photo
-
-
-                break;
+//            case R.id.videoButton:
+//                ActivityCompat.requestPermissions(activity,
+//                        new String[]{Manifest.permission.CAMERA, Manifest.permission.WRITE_EXTERNAL_STORAGE},
+//                        REQUEST_VIDEO_CAPTURE); //Take Photo
+//
+//
+//                break;
             case R.id.settingsButtonID:
                 startActivity(new Intent(this, SettingsActivity.class));
                 break;
