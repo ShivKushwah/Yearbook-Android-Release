@@ -13,8 +13,12 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -38,6 +42,30 @@ public class SettingsActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_settings);
+        ((ImageView) findViewById(R.id.transparentImageView)).setAlpha(127);
+        DatabaseReference mDatabase = FirebaseDatabase.getInstance().getReference();
+        mDatabase.child("Groups").child(YearbookActivity.currentGroup).child("coverPhotoUrl").addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                String url = (String) dataSnapshot.getValue();
+                if (url != null && !url.equals("")) {
+                    Glide.with(context)
+                            .load(url)
+                            .diskCacheStrategy(DiskCacheStrategy.ALL)
+                            .into(((ImageView) findViewById(R.id.settingsGroupPhoto)));
+                    //progressBar.setVisibility(ProgressBar.INVISIBLE);
+
+                }else
+                {
+                    ((ImageView) findViewById(R.id.settingsGroupPhoto)).setImageResource(R.drawable.profile_purple);
+                }
+
+            }
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
         context = this;
 
         adapter = new SettingsActivityAdapter(getApplicationContext(), this);
