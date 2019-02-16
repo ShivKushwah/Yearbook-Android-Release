@@ -17,18 +17,27 @@ import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
+import android.net.Uri;
+import android.support.annotation.NonNull;
+import android.util.Log;
+
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.UploadTask;
 
 
-
+import java.time.Year;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Set;
@@ -45,6 +54,48 @@ public class SettingsActivity extends AppCompatActivity {
         setContentView(R.layout.activity_settings);
         ((ImageView) findViewById(R.id.transparentImageView)).setAlpha(127);
         DatabaseReference mDatabase = FirebaseDatabase.getInstance().getReference();
+        findViewById(R.id.changePhotoButton).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                dispatchCoverGalleryPictureIntent();
+            }
+        });
+        findViewById(R.id.changeNameButton).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                LayoutInflater groupManager = LayoutInflater.from(SettingsActivity.this);
+                View newGroupView = groupManager.inflate(R.layout.group_add_layout, null);
+                android.app.AlertDialog.Builder newGroupAlertDialogBuilder = new android.app.AlertDialog.Builder(SettingsActivity.this);
+
+                final EditText newGroupName = (EditText)newGroupView.findViewById(R.id.newGroupNameInput);
+
+                newGroupAlertDialogBuilder.setView(newGroupView);
+
+                newGroupAlertDialogBuilder
+                        .setCancelable(false)
+                        .setPositiveButton("Confirm",
+                                new DialogInterface.OnClickListener() {
+                                    public void onClick(DialogInterface dialog,int id) {
+                                        YearbookActivity.mDatabase.child("Groups").child(YearbookActivity.currentGroup).child("title").setValue(newGroupName.getText().toString());
+                                        Toast.makeText(SettingsActivity.this, "Name changed!", Toast.LENGTH_SHORT).show();
+
+
+                                    }})
+                        .setNegativeButton("Cancel",
+                                new DialogInterface.OnClickListener() {
+                                    public void onClick(DialogInterface dialog,int id) {
+                                        dialog.cancel();
+                                    }});
+
+                android.app.AlertDialog newGroupAlertDialog = newGroupAlertDialogBuilder.create();
+                newGroupAlertDialog.show();
+
+                Button nButton = newGroupAlertDialog.getButton(DialogInterface.BUTTON_NEGATIVE);
+                nButton.setTextColor(getResources().getColor(R.color.purple_main));
+                Button pButton = newGroupAlertDialog.getButton(DialogInterface.BUTTON_POSITIVE);
+                pButton.setTextColor(getResources().getColor(R.color.purple_main));
+            }
+        });
         mDatabase.child("Groups").child(YearbookActivity.currentGroup).child("title").addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
@@ -95,6 +146,13 @@ public class SettingsActivity extends AppCompatActivity {
 
 
     }
+
+    private void dispatchCoverGalleryPictureIntent() {
+        Intent galleryPictureIntent = new Intent(Intent.ACTION_GET_CONTENT);
+        galleryPictureIntent.setType("image/*");
+        startActivityForResult(galleryPictureIntent, 3);
+    }
+
 
     public void logout() {
         SettingsActivity.context.startActivity(new Intent(SettingsActivity.context, LoginActivity.class));
@@ -372,6 +430,44 @@ public class SettingsActivity extends AppCompatActivity {
         });
 
         alertDialog.show();
+    }
+
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        Log.d("ACT", "ACT RESULT");
+
+        //Handle coming back from take photo screen for either uploading a photo or changing cover photo
+
+
+
+        if (requestCode == 3 && resultCode == RESULT_OK)
+        {
+            Uri coverPhotoUri = data.getData();
+            final DatabaseReference mDatabase = FirebaseDatabase.getInstance().getReference();
+            if (coverPhotoUri != null) {
+                StorageReference coverStorageRef = FirebaseStorage.getInstance().getReferenceFromUrl(getString(R.string.firebase_link));
+
+                final String groupPhotoKey = mDatabase.child("Groups").child(YearbookActivity.currentGroup).child("coverPhotoUrl").push().getKey();
+
+                //progressBar.setVisibility(ProgressBar.VISIBLE);
+
+                StorageReference newPhotoRef = coverStorageRef.child("photos/" + groupPhotoKey + ".jpg");
+
+                newPhotoRef.putFile(coverPhotoUri).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                    @Override
+                    public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                        String url = taskSnapshot.getDownloadUrl().toString();
+                        mDatabase.child("Groups").child(YearbookActivity.currentGroup).child("coverPhotoUrl").setValue(url);
+                    }
+                }).addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        Toast.makeText(getApplicationContext(), "Image failed to upload", Toast.LENGTH_SHORT);
+                    }
+                });
+            }
+        }
     }
 
     public class VerticalSpaceItemDecoration extends RecyclerView.ItemDecoration { //Class for dividers betweens rows in "to Do" fragment
