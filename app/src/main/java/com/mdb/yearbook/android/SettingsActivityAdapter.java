@@ -35,7 +35,7 @@ public class SettingsActivityAdapter extends RecyclerView.Adapter<SettingsActivi
 
         } else {
             ((TextView )view.findViewById(R.id.settings_text)).setText("Logout");
-            ((ImageView) view.findViewById(R.id.settings_image)).setImageBitmap(null);
+            ((ImageView) view.findViewById(R.id.settings_image)).setImageBitmap(null);se
 
         }
         return new SettingsActivityAdapter.CustomViewHolder(view);
