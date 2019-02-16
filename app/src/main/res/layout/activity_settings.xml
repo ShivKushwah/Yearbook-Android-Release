@@ -9,11 +9,11 @@
     <android.support.v7.widget.RecyclerView
         android:id="@+id/settingsrecyclerview"
         android:layout_width="372dp"
-        android:layout_height="276dp"
-        android:layout_marginBottom="4dp"
+        android:layout_height="246dp"
+        android:layout_marginStart="4dp"
+        android:layout_marginTop="4dp"
         android:layout_marginEnd="8dp"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
+        android:layout_marginBottom="4dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
@@ -44,8 +44,8 @@
         android:id="@+id/settingsGroupPhoto"
         android:layout_width="366dp"
         android:layout_height="179dp"
-        android:layout_marginEnd="8dp"
-        android:layout_marginStart="8dp"
+        android:layout_marginEnd="4dp"
+        android:layout_marginStart="4dp"
         android:scaleType="centerCrop"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -55,8 +55,10 @@
     <ImageView
         android:id="@+id/transparentImageView"
         android:layout_width="359dp"
-        android:layout_height="79dp"
+        android:layout_height="72dp"
+        android:layout_marginEnd="8dp"
         app:layout_constraintBottom_toBottomOf="@+id/settingsGroupPhoto"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="@+id/settingsGroupPhoto"
         app:srcCompat="@drawable/fab_label_background" />
     <TextView
