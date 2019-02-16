@@ -15,6 +15,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
@@ -44,6 +45,20 @@ public class SettingsActivity extends AppCompatActivity {
         setContentView(R.layout.activity_settings);
         ((ImageView) findViewById(R.id.transparentImageView)).setAlpha(127);
         DatabaseReference mDatabase = FirebaseDatabase.getInstance().getReference();
+        mDatabase.child("Groups").child(YearbookActivity.currentGroup).child("title").addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                String groupName = (String)dataSnapshot.getValue();
+                ((TextView)((SettingsActivity)SettingsActivity.context).findViewById(R.id.settingsGroupText)).setText(groupName);
+                //toolbar.setTitle(groupName);
+
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
         mDatabase.child("Groups").child(YearbookActivity.currentGroup).child("coverPhotoUrl").addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
