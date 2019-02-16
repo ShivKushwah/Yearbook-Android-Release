@@ -154,6 +154,7 @@ public class YearbookActivity extends AppCompatActivity {
         final View actionA = findViewById(R.id.action_a);
         final View actionB = findViewById(R.id.action_b);
         final View actionC = findViewById(R.id.action_c);
+//        final View actionD = findViewById(R.id.action_d);
 
         final FloatingActionMenu menuMultipleActions = (FloatingActionMenu) findViewById(R.id.multiple_actions);
         menuMultipleActions.setOnClickListener(new View.OnClickListener() {
@@ -190,6 +191,17 @@ public class YearbookActivity extends AppCompatActivity {
                 menuMultipleActions.close(true);
             }
         });
+//        actionD.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                ActivityCompat.requestPermissions(activity,
+//                        new String[]{Manifest.permission.CAMERA, Manifest.permission.WRITE_EXTERNAL_STORAGE},
+//                        REQUEST_VIDEO_CAPTURE); //Take Photo
+//                menuMultipleActions.setClosedOnTouchOutside(true);
+//                menuMultipleActions.close(true);
+//
+//            }
+//        });
 
         mDatabase = FirebaseDatabase.getInstance().getReference();
 
