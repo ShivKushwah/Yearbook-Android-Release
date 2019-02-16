@@ -26,15 +26,16 @@ public class SettingsActivityAdapter extends RecyclerView.Adapter<SettingsActivi
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.settings_card_view_1, parent, false);
 
         if (viewType == 0) {
-            ((TextView )view.findViewById(R.id.settings_text)).setText("Join New Group");
+            ((TextView )view.findViewById(R.id.settings_text)).setText("Add/Change Group");
             ((ImageView) view.findViewById(R.id.settings_image)).setImageResource(R.drawable.new_group);
 
         } else if (viewType == 1) {
-            ((TextView )view.findViewById(R.id.settings_text)).setText("Add Parents");
+            ((TextView )view.findViewById(R.id.settings_text)).setText("Add Member");
             ((ImageView) view.findViewById(R.id.settings_image)).setImageResource(R.drawable.students_settings);
 
         } else {
             ((TextView )view.findViewById(R.id.settings_text)).setText("Logout");
+            ((ImageView) view.findViewById(R.id.settings_image)).setImageBitmap(null);
 
         }
         return new SettingsActivityAdapter.CustomViewHolder(view);

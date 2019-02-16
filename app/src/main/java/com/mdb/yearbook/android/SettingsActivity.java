@@ -21,7 +21,6 @@ import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.util.Log;
 
-
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.google.android.gms.tasks.OnFailureListener;
