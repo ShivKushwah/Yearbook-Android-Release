@@ -46,7 +46,7 @@ public class Photo
         this.groupIds = groupIds;
         this.date = date;
         this.location = location;
-//        this.dateUnix = dateUnix;
+        this.dateUnix = dateUnix;
         this.taggedMembers  = taggedMembers;
     }
 
