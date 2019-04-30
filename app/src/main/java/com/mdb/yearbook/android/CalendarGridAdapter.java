@@ -95,9 +95,9 @@ public class CalendarGridAdapter extends ArrayAdapter {
                                             @Override
                                             public void onDataChange(DataSnapshot dataSnapshot) {
                                                 Photo p = dataSnapshot.getValue(Photo.class); //get the photo
-                                                if (p != null && p.getDate() != 0) {
+                                                if (p != null && Long.parseLong(p.getDateUnix()) != 0) {
                                                     Calendar c = Calendar.getInstance();
-                                                    c.setTimeInMillis(p.getDate());
+                                                    c.setTimeInMillis(Long.parseLong(p.getDateUnix()));
                                                     if (c.get(Calendar.DAY_OF_MONTH) == dayValue && c.get(Calendar.MONTH) + 1 == displayMonth && c.get(Calendar.YEAR) == displayYear
                                                             && p.getGroupIds() != null && p.getGroupIds().contains(currentGroup)) {
                                                         StorageReference storageRef = FirebaseStorage.getInstance().getReference().child("photos/" + s + ".jpg");

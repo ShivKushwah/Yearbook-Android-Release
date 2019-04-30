@@ -107,9 +107,9 @@ public class CustomCalendarView extends LinearLayout{
                         {
 //                            HashMap<String, Object> photoMap = (HashMap<String, Object>) d.getValue();
                             Photo p = d.getValue(Photo.class);
-                            if (p != null && p.getDate() != 0) {
+                            if (p != null && Long.parseLong(p.getDateUnix()) != 0) {
                                 Calendar c = Calendar.getInstance();
-                                c.setTimeInMillis(p.getDate());
+                                c.setTimeInMillis(Long.parseLong(p.getDateUnix()));
                                 if (c.get(Calendar.DAY_OF_MONTH) == day && c.get(Calendar.MONTH) + 1 == month && c.get(Calendar.YEAR) == year
                                         && p.getGroupIds() != null && p.getGroupIds().contains(currentGroup)) {
                                     photos.add(p);

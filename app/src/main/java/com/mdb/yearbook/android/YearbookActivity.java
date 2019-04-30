@@ -315,9 +315,10 @@ public class YearbookActivity extends AppCompatActivity {
                                                 HashMap<String, Object> photoMap = (HashMap<String, Object>) dataSnapshot.getValue();
 
                                                 if (photoMap != null) {
+
                                                     Photo p = new Photo(
                                                             (String) photoMap.get("caption"), (String) photoMap.get("imageUrl"), (String) photoMap.get("posterId"),
-                                                            (ArrayList<String>) photoMap.get("groupIds"), (long) photoMap.get("date"),
+                                                            (ArrayList<String>) photoMap.get("groupIds"), (String) photoMap.get("date"), (String) photoMap.get("dateUnix"),
                                                             (String) photoMap.get("location"), (ArrayList<String>) photoMap.get("taggedMembers")
                                                     );
 

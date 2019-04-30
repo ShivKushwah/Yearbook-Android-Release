@@ -162,8 +162,13 @@ public class TaggingActivity extends AppCompatActivity {
                             newPhotoRef = storageRef.child("photos/" + key + ".jpg");
                         }
 
+                        Calendar now = Calendar.getInstance();
+                        final int year = now.get(Calendar.YEAR);
+                        final int month = now.get(Calendar.MONTH) + 1;
+                        final int day = now.get(Calendar.DAY_OF_MONTH);
+
                         final Photo newPhoto = new Photo("", key, YearbookActivity.mAuth.getCurrentUser().getUid(),
-                                groupIds, timeUnix, "", adapter.isTagged);
+                                groupIds, "" + month + "" + day + "" + year, Long.toString(timeUnix), "", adapter.isTagged);
 
                         ref.child("Groups").child(YearbookActivity.currentGroup).addListenerForSingleValueEvent(new ValueEventListener() {
                             @Override

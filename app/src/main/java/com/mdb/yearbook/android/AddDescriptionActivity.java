@@ -48,9 +48,9 @@ public class AddDescriptionActivity extends AppCompatActivity {
         final String key = ref.child("Photos").push().getKey();
 
         Calendar now = Calendar.getInstance();
-        int year = now.get(Calendar.YEAR);
-        int month = now.get(Calendar.MONTH) + 1;
-        int day = now.get(Calendar.DAY_OF_MONTH);
+        final int year = now.get(Calendar.YEAR);
+        final int month = now.get(Calendar.MONTH) + 1;
+        final int day = now.get(Calendar.DAY_OF_MONTH);
 
         final ArrayList<String> taggedMembers = new ArrayList<>();
 
@@ -68,7 +68,7 @@ public class AddDescriptionActivity extends AppCompatActivity {
                     StorageReference storageRef = FirebaseStorage.getInstance().getReferenceFromUrl(getString(R.string.firebase_link));
                     final StorageReference newPhotoRef = storageRef.child("photos/" + key + ".jpg");
                     final Photo newPhoto = new Photo(caption, key, YearbookActivity.mAuth.getCurrentUser().getUid(),
-                            groupIds, timeUnix, "", TaggingActivity.adapter.isTagged);
+                            groupIds, "" + month + "" + day + "" + year, Long.toString(timeUnix), "", TaggingActivity.adapter.isTagged);
 
                     ref.child("Groups").child(YearbookActivity.currentGroup).addListenerForSingleValueEvent(new ValueEventListener() {
                         @Override

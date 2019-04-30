@@ -13,21 +13,21 @@ public class Photo
     private String imageUrl; //NOTE: Use this to obtain the storagebase URL for the image
     private String posterId;
     private ArrayList<String> groupIds;
-    private long date; // int
+    private String date; // int
     private String location;
     private ArrayList<String> taggedMembers;
-//    private String dateUnix;
+    private String dateUnix;
     public Photo() {
         this.caption = "";
         this.imageUrl = "";
         this.posterId = "";
         this.groupIds = new ArrayList<>();
-        this.date = 0;
+        this.date = "";
         this.location = "";
         this.taggedMembers = new ArrayList<>();
     }
 
-    public Photo(String caption, String imageUrl, String posterId, ArrayList<String> groupIds, long date, String location)
+    public Photo(String caption, String imageUrl, String posterId, ArrayList<String> groupIds, String date, String dateUnix, String location)
     {
         this.caption = caption;
         this.imageUrl = imageUrl;
@@ -38,7 +38,7 @@ public class Photo
 //        this.dateUnix = dateUnix;
     }
 
-    public Photo(String caption, String imageUrl, String posterId, ArrayList<String> groupIds, long date, String location, ArrayList<String> taggedMembers)
+    public Photo(String caption, String imageUrl, String posterId, ArrayList<String> groupIds, String date, String dateUnix, String location, ArrayList<String> taggedMembers)
     {
         this.caption = caption;
         this.imageUrl = imageUrl;
@@ -82,11 +82,11 @@ public class Photo
         this.groupIds = groupIds;
     }
 
-    public long getDate() {
+    public String getDate() {
         return date;
     }
 
-    public void setDate(long date) {
+    public void setDate(String date) {
         this.date = date;
     }
 
@@ -106,11 +106,11 @@ public class Photo
         this.taggedMembers = taggedMembers;
     }
 
-//    public String getDateUnix() {
-//        return dateUnix;
-//    }
-//
-//    public void setDateUnix(String dateUnix) {
-//        this.dateUnix = dateUnix;
-//    }
+    public String getDateUnix() {
+        return dateUnix;
+    }
+
+    public void setDateUnix(String dateUnix) {
+        this.dateUnix = dateUnix;
+    }
 }
