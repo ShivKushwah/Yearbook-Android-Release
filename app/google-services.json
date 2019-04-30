@@ -1,39 +1,119 @@
 {
   "project_info": {
-    "project_number": "66209939571",
-    "firebase_url": "https://development-yearbook.firebaseio.com",
-    "project_id": "development-yearbook",
-    "storage_bucket": "development-yearbook.appspot.com"
+    "project_number": "1042562633872",
+    "firebase_url": "https://yearbook-9bd83.firebaseio.com",
+    "project_id": "yearbook-9bd83",
+    "storage_bucket": "yearbook-9bd83.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:66209939571:android:6522644356261797",
+        "mobilesdk_app_id": "1:1042562633872:android:1d937cbda2c962af",
+        "android_client_info": {
+          "package_name": "com.example.datarsd1.yearbook"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1042562633872-804fcc8bhkv3aci3gcp5vto3iq61nh1e.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.datarsd1.yearbook",
+            "certificate_hash": "c0769d44fad38d3f70d2e1943ac41688c92dd43b"
+          }
+        },
+        {
+          "client_id": "1042562633872-phb9qr3ubk5pvghn8t1cu9orv6u7ucm9.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAb-gEKT9USNsF_Nb2qssxUxxGk9RJwe_w"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1042562633872-phb9qr3ubk5pvghn8t1cu9orv6u7ucm9.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1042562633872:android:9da8378ef1b5f29b",
+        "android_client_info": {
+          "package_name": "com.example.datarsd1.yearbook4"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1042562633872-0vjg9m4mlite6473g7gq3530ou0dlmpo.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.datarsd1.yearbook4",
+            "certificate_hash": "a4c1f515078a1cf9a4ef9d1963ec038eeb1bd309"
+          }
+        },
+        {
+          "client_id": "1042562633872-j45ues9iv1mqme66gdf4du09gud80662.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.datarsd1.yearbook4",
+            "certificate_hash": "c0769d44fad38d3f70d2e1943ac41688c92dd43b"
+          }
+        },
+        {
+          "client_id": "1042562633872-phb9qr3ubk5pvghn8t1cu9orv6u7ucm9.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAb-gEKT9USNsF_Nb2qssxUxxGk9RJwe_w"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1042562633872-phb9qr3ubk5pvghn8t1cu9orv6u7ucm9.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1042562633872:android:6522644356261797",
         "android_client_info": {
           "package_name": "com.mdb.yearbook.android"
         }
       },
       "oauth_client": [
         {
-          "client_id": "66209939571-i9kodpt8lfoq103b5jsb507qdv6hij9k.apps.googleusercontent.com",
+          "client_id": "1042562633872-phb9qr3ubk5pvghn8t1cu9orv6u7ucm9.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
       "api_key": [
         {
-          "current_key": "AIzaSyD2m9NuR_87Ad6X1PXLZLeRWGFNPJaJqA8"
+          "current_key": "AIzaSyAb-gEKT9USNsF_Nb2qssxUxxGk9RJwe_w"
         }
       ],
       "services": {
-        "analytics_service": {
-          "status": 1
-        },
         "appinvite_service": {
-          "status": 1,
-          "other_platform_oauth_client": []
-        },
-        "ads_service": {
-          "status": 2
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1042562633872-phb9qr3ubk5pvghn8t1cu9orv6u7ucm9.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
         }
       }
     }
